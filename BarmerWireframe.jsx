@@ -946,7 +946,7 @@ const HealthConnectOverview = ({ onBack, onOpen }) => {
           </div>
           {/* Illustration rechts */}
           <div style={{ width:208, height:240, flexShrink:0 }}>
-            <img src="data:image/jpeg;base64,PLACEHOLDER" alt="Familie" style={{ width:"100%", height:"100%", objectFit:"contain", objectPosition:"center top" }}/>
+            <img src="./assets/familie.jpg" alt="Familie" style={{ width:"100%", height:"100%", objectFit:"contain", objectPosition:"center top" }}/>
           </div>
         </div>
 
