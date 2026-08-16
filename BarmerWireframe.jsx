@@ -546,7 +546,7 @@ const HomeScreen = ({ onOpenHealthConnect }) => {
 
         <button className="w-full flex items-center gap-4 py-4 text-left">
           <div className="shrink-0" style={{ width: 80, height: 56 }}>
-            <img src="data:image/jpeg;base64,PLACEHOLDER" alt="Familie" style={{ width:"100%", height:"100%", objectFit:"contain" }}/>
+            <img src="./assets/familie-kachel.jpg" alt="Familie" style={{ width:"100%", height:"100%", objectFit:"contain" }}/>
           </div>
           <div className="flex-1 text-[19px]"
                style={{ fontWeight: 700, color: C.black, letterSpacing: "-0.01em" }}>
