@@ -1013,7 +1013,7 @@ const HealthConnectOverview = ({ onBack, onOpen }) => {
             </div>
             {/* Bild rechts */}
             <div style={{ width:"45%", flexShrink:0, overflow:"hidden", alignSelf:"flex-end" }}>
-              <img src="data:image/jpeg;base64,PLACEHOLDER" alt="Gemeinsam"
+              <img src="./assets/gemeinsam.jpg" alt="Gemeinsam"
                    style={{ width:"100%", height:"auto", display:"block",
                              objectFit:"cover", objectPosition:"top center",
                              maxHeight:130 }}/>
