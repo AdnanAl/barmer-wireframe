@@ -426,7 +426,7 @@ const HomeScreen = ({ onOpenHealthConnect }) => {
         </div>
         {/* Hochgeladenes Bild oben rechts */}
         <div style={{ width: 210, height: 230, flexShrink: 0 }}>
-          <img src="data:image/jpeg;base64,PLACEHOLDER" alt="Familie"
+          <img src="./assets/familie.jpg" alt="Familie"
                style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center top" }}/>
         </div>
       </div>
