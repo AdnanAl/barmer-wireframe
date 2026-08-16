@@ -871,7 +871,7 @@ const HealthConnectOverview = ({ onBack, onOpen }) => {
     { id:"info",    label:"Erkrankungen", color:HCG,       Icon:ErkrankungenSVG, desc:"Infos & Austausch zu deiner Erkrankung", centered:true, bg:"#F7F9F4" },
     { id:"freunde",  label:"Freunde",      centered:true, bg:"#F5F3F9", color:"#8B5CF6", Icon:() => <img src="./assets/freunde.jpg" alt="Freunde" style={{width:"100%",height:"100%",objectFit:"contain"}}/>,      desc:"Finde Menschen, die dich verstehen" },
     { id:"gruppen", label:"Gruppen",      color:"#F59E0B", Icon:() => <img src="./assets/gruppen.jpg" alt="Gruppen" style={{width:"100%",height:"100%",objectFit:"contain",transform:"scale(1.2)",transformOrigin:"center center"}}/>,      desc:"Tritt Gruppen bei oder starte deine eigene", centered:true, bg:"#FCFAEE" },
-    { id:"tagebuch",label:"Tagebuch",     color:"#3B82F6", Icon:() => <img src="data:image/jpeg;base64,PLACEHOLDER" alt="Tagebuch" style={{width:"100%",height:"100%",objectFit:"contain"}}/>,     desc:"Halte deine Gedanken & Fortschritte fest", centered:true, bg:"#F2F6FA" },
+    { id:"tagebuch",label:"Tagebuch",     color:"#3B82F6", Icon:() => <img src="./assets/tagebuch.jpg" alt="Tagebuch" style={{width:"100%",height:"100%",objectFit:"contain"}}/>,     desc:"Halte deine Gedanken & Fortschritte fest", centered:true, bg:"#F2F6FA" },
   ];
 
   const quick = [
