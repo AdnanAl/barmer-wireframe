@@ -877,7 +877,7 @@ const HealthConnectOverview = ({ onBack, onOpen }) => {
   const quick = [
     { label:"Erinnerungen", Icon:IconBell, action: () => onOpen("erinnerungen"), bg:"#F7F9F4" },
     { label:"Termine",      Icon:IconCalendar, action: () => onOpen("termine"), bg:"#F7F9F4" },
-    { label:"Dokumente",    Icon:IconDoc, bg:"#F7F9F4" },
+    { label:"Dokumente",    Icon:IconDoc, action: () => onOpen("dokumente"), bg:"#F7F9F4" },
     { label:"Hilfe & Kontakt", Icon:IconHelp, bg:"#F7F9F4" },
   ];
 
@@ -2296,6 +2296,289 @@ const TermineScreen = ({ onBack }) => {
 };
 
 
+// ─── Dokumente Screen ────────────────────────────────────────────────────
+const DokumenteScreen = ({ onBack }) => {
+  const HCG = "#22A45D";
+  const S   = { fontFamily:"Manrope, system-ui, sans-serif" };
+
+  const categories = [
+    { id:"gesundheit",   icon:"📄", label:"Gesundheitsdokumente", desc:"Arztberichte, Befunde, Therapieunterlagen", bg:"#F0F7F2" },
+    { id:"krankenkasse", icon:"💳", label:"Krankenkasse",         desc:"Bescheide, Anträge, Genehmigungen",         bg:"#E0F2FE" },
+    { id:"medikamente",  icon:"💊", label:"Medikamente",          desc:"Rezepte, Medikamentenpläne",                bg:"#EDE9FE" },
+    { id:"uploads",      icon:"📁", label:"Meine Uploads",        desc:"Eigene hochgeladene Dokumente",             bg:"#FEF3C7" },
+  ];
+
+  const [documents, setDocuments] = React.useState([
+    { id:1, icon:"📄", title:"Befund vom Hausarzt",  date:"12. Mai 2026",   category:"Gesundheitsdokumente" },
+    { id:2, icon:"📄", title:"Genehmigung Therapie",  date:"29. April 2026", category:"Krankenkasse" },
+    { id:3, icon:"📄", title:"Antrag",                date:"18. April 2026", category:"Krankenkasse" },
+  ]);
+
+  const antraege = [
+    { id:1, title:"Antrag auf Kostenübernahme Therapie", status:"pending"  },
+    { id:2, title:"Genehmigung Reha-Maßnahme",            status:"approved" },
+    { id:3, title:"Antrag Pflegehilfsmittel",             status:"rejected" },
+  ];
+
+  const statusMeta = {
+    pending:  { dot:"🟡", label:"In Bearbeitung", color:"#B45309", bg:"#FEF3C7" },
+    approved: { dot:"🟢", label:"Genehmigt",       color:HCG,       bg:"#DCFCE7" },
+    rejected: { dot:"🔴", label:"Abgelehnt",       color:"#DC2626", bg:"#FEE2E2" },
+  };
+
+  const [selectedDoc, setSelectedDoc] = React.useState(null);
+  const [showUpload,  setShowUpload]  = React.useState(false);
+
+  // Upload-Formular State
+  const [uKategorie, setUKategorie] = React.useState("");
+  const [uName,      setUName]      = React.useState("");
+  const [uDatum,     setUDatum]     = React.useState("");
+
+  const resetUpload = () => { setUKategorie(""); setUName(""); setUDatum(""); };
+
+  const handleUpload = () => {
+    if (!uName.trim()) { setShowUpload(false); resetUpload(); return; }
+    const parsed = uDatum ? new Date(uDatum + "T00:00:00") : null;
+    const dateLabel = parsed && !isNaN(parsed)
+      ? parsed.toLocaleDateString("de-DE", { day:"2-digit", month:"long", year:"numeric" })
+      : "Ohne Datum";
+    setDocuments(prev => [
+      { id:Date.now(), icon:"📄", title:uName, date:dateLabel, category: uKategorie || "Meine Uploads" },
+      ...prev,
+    ]);
+    setShowUpload(false);
+    resetUpload();
+  };
+
+  return (
+    <div style={{ ...S, display:"flex", flexDirection:"column", height:"100%",
+                  background:"#F7F8FA", position:"relative" }}>
+
+      {/* ── Header ── */}
+      <div style={{ background:"white", display:"flex", alignItems:"center", gap:12,
+                    padding:"12px 16px", borderBottom:"1px solid #EAEAEA", flexShrink:0 }}>
+        <button onClick={onBack} style={{ border:"none", background:"none", cursor:"pointer",
+                                          padding:"4px 2px", display:"flex" }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18l-6-6 6-6" stroke="#111" strokeWidth="2.2"
+                  strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+        <span style={{ fontSize:18, fontWeight:800, color:"#111", flex:1 }}>Dokumente</span>
+      </div>
+
+      {/* ── Scrollbarer Inhalt ── */}
+      <div style={{ flex:1, overflowY:"auto", padding:"16px 16px 24px" }}>
+
+        {/* ═══ 1. MEINE DOKUMENTE ═══ */}
+        <div style={{ fontSize:16, fontWeight:800, color:"#111", marginBottom:10 }}>
+          Meine Dokumente
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8, marginBottom:24 }}>
+          {categories.map(c => (
+            <div key={c.id} style={{ background:"white", borderRadius:16, padding:"14px",
+                                      boxShadow:"0 1px 4px rgba(0,0,0,0.05)", cursor:"pointer" }}>
+              <div style={{ width:40, height:40, borderRadius:12, background:c.bg,
+                             display:"flex", alignItems:"center", justifyContent:"center",
+                             fontSize:18, marginBottom:10 }}>{c.icon}</div>
+              <div style={{ fontSize:13.5, fontWeight:700, color:"#111", marginBottom:3 }}>{c.label}</div>
+              <div style={{ fontSize:11, color:"#6B7280", lineHeight:1.4 }}>{c.desc}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* ═══ 2. LETZTE DOKUMENTE ═══ */}
+        <div style={{ fontSize:16, fontWeight:800, color:"#111", marginBottom:10 }}>
+          Letzte Dokumente
+        </div>
+        <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:24 }}>
+          {documents.map(doc => (
+            <button key={doc.id} onClick={() => setSelectedDoc(doc)}
+                    style={{ background:"white", borderRadius:16, padding:"13px 16px",
+                              display:"flex", alignItems:"center", gap:12, border:"none",
+                              boxShadow:"0 1px 4px rgba(0,0,0,0.05)", cursor:"pointer",
+                              textAlign:"left", width:"100%", boxSizing:"border-box" }}>
+              <div style={{ width:42, height:42, borderRadius:12, background:"#F0F7F2",
+                             display:"flex", alignItems:"center", justifyContent:"center",
+                             fontSize:20, flexShrink:0 }}>{doc.icon}</div>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ fontSize:14, fontWeight:700, color:"#111" }}>{doc.title}</div>
+                <div style={{ fontSize:12, color:"#6B7280", marginTop:2 }}>{doc.date}</div>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M9 6l6 6-6 6" stroke="#C4C4C4" strokeWidth="2"
+                      strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          ))}
+        </div>
+
+        {/* ═══ 3. + DOKUMENT HOCHLADEN ═══ */}
+        <button onClick={() => setShowUpload(true)}
+                style={{ width:"100%", padding:"14px", borderRadius:14, border:"none",
+                          background:HCG, color:"white", fontSize:14, fontWeight:700,
+                          cursor:"pointer", display:"flex", alignItems:"center",
+                          justifyContent:"center", gap:8, marginBottom:24 }}>
+          <span style={{ fontSize:17 }}>+</span> Dokument hochladen
+        </button>
+
+        {/* ═══ 4. ANTRÄGE & BESCHEIDE ═══ */}
+        <div style={{ fontSize:16, fontWeight:800, color:"#111", marginBottom:10 }}>
+          Anträge & Bescheide
+        </div>
+        <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+          {antraege.map(a => {
+            const meta = statusMeta[a.status];
+            return (
+              <div key={a.id} style={{ background:"white", borderRadius:16, padding:"13px 16px",
+                                        display:"flex", alignItems:"center", gap:12,
+                                        boxShadow:"0 1px 4px rgba(0,0,0,0.05)" }}>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontSize:14, fontWeight:700, color:"#111" }}>{a.title}</div>
+                </div>
+                <div style={{ display:"flex", alignItems:"center", gap:5, flexShrink:0,
+                              background:meta.bg, borderRadius:20, padding:"5px 10px" }}>
+                  <span style={{ fontSize:11 }}>{meta.dot}</span>
+                  <span style={{ fontSize:11.5, fontWeight:700, color:meta.color }}>{meta.label}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+      </div>{/* end scroll */}
+
+      {/* ═══ MODAL: Dokumentdetail ═══ */}
+      {selectedDoc && (
+        <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.45)",
+                      zIndex:100, display:"flex", alignItems:"flex-end" }}
+             onClick={() => setSelectedDoc(null)}>
+          <div onClick={e => e.stopPropagation()}
+               style={{ background:"white", borderRadius:"24px 24px 0 0",
+                        padding:"20px 20px 36px", width:"100%", boxSizing:"border-box" }}>
+            <div style={{ width:40, height:4, borderRadius:2, background:"#D1D5DB",
+                          margin:"0 auto 18px" }}/>
+            <div style={{ width:56, height:56, borderRadius:16, background:"#F0F7F2",
+                          display:"flex", alignItems:"center", justifyContent:"center",
+                          fontSize:26, marginBottom:14 }}>{selectedDoc.icon}</div>
+            <div style={{ fontSize:18, fontWeight:800, color:"#111", marginBottom:6 }}>
+              {selectedDoc.title}
+            </div>
+            <div style={{ fontSize:13, color:"#6B7280", marginBottom:2 }}>
+              {selectedDoc.category}
+            </div>
+            <div style={{ fontSize:13, color:"#6B7280", marginBottom:20 }}>
+              Hochgeladen am {selectedDoc.date}
+            </div>
+            <div style={{ display:"flex", gap:10 }}>
+              <button onClick={() => setSelectedDoc(null)}
+                      style={{ flex:1, padding:"13px", borderRadius:12,
+                                border:"1.5px solid #E5E7EB", background:"white",
+                                fontSize:14, fontWeight:700, color:"#6B7280", cursor:"pointer" }}>
+                Schließen
+              </button>
+              <button style={{ flex:2, padding:"13px", borderRadius:12, border:"none",
+                                background:HCG, fontSize:14, fontWeight:700,
+                                color:"white", cursor:"pointer" }}>
+                Herunterladen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══ MODAL: Dokument hochladen ═══ */}
+      {showUpload && (
+        <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.45)",
+                      zIndex:100, display:"flex", alignItems:"flex-end" }}>
+          <div style={{ background:"white", borderRadius:"24px 24px 0 0",
+                        padding:"20px 20px 36px", width:"100%", boxSizing:"border-box",
+                        maxHeight:"90%", overflowY:"auto" }}>
+            <div style={{ width:40, height:4, borderRadius:2, background:"#D1D5DB",
+                          margin:"0 auto 18px" }}/>
+            <div style={{ fontSize:18, fontWeight:800, color:"#111", marginBottom:18 }}>
+              Dokument hochladen
+            </div>
+
+            {/* Foto / Datei */}
+            <div style={{ display:"flex", gap:10, marginBottom:16 }}>
+              <button style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center",
+                                gap:6, padding:"16px 10px", borderRadius:14,
+                                border:"1.5px dashed #D1D5DB", background:"#F7F8FA",
+                                cursor:"pointer" }}>
+                <span style={{ fontSize:22 }}>📷</span>
+                <span style={{ fontSize:12.5, fontWeight:600, color:"#374151" }}>Dokument fotografieren</span>
+              </button>
+              <button style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center",
+                                gap:6, padding:"16px 10px", borderRadius:14,
+                                border:"1.5px dashed #D1D5DB", background:"#F7F8FA",
+                                cursor:"pointer" }}>
+                <span style={{ fontSize:22 }}>📁</span>
+                <span style={{ fontSize:12.5, fontWeight:600, color:"#374151" }}>Datei auswählen</span>
+              </button>
+            </div>
+
+            {/* Kategorie */}
+            <div style={{ marginBottom:16 }}>
+              <div style={{ fontSize:13, fontWeight:600, color:"#6B7280", marginBottom:8 }}>
+                Kategorie auswählen
+              </div>
+              <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
+                {categories.map(c => (
+                  <button key={c.id} onClick={() => setUKategorie(c.label)}
+                          style={{ display:"flex", alignItems:"center", gap:5,
+                                   padding:"7px 12px", borderRadius:20, border:"none",
+                                   fontSize:13, fontWeight:600, cursor:"pointer",
+                                   background: uKategorie === c.label ? HCG : "#F3F4F6",
+                                   color: uKategorie === c.label ? "white" : "#374151" }}>
+                    <span>{c.icon}</span>{c.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Dokumentname */}
+            <div style={{ marginBottom:14 }}>
+              <div style={{ fontSize:13, fontWeight:600, color:"#6B7280", marginBottom:6 }}>Dokumentname</div>
+              <input value={uName} onChange={e => setUName(e.target.value)}
+                     placeholder="z. B. Befund vom Hausarzt"
+                     style={{ width:"100%", padding:"11px 14px", borderRadius:12,
+                               border:"1.5px solid #E5E7EB", fontSize:14, outline:"none",
+                               boxSizing:"border-box", fontFamily:"Manrope, system-ui, sans-serif" }}/>
+            </div>
+
+            {/* Datum */}
+            <div style={{ marginBottom:20 }}>
+              <div style={{ fontSize:13, fontWeight:600, color:"#6B7280", marginBottom:6 }}>Datum</div>
+              <input type="date" value={uDatum} onChange={e => setUDatum(e.target.value)}
+                     style={{ width:"100%", padding:"11px 14px", borderRadius:12,
+                               border:"1.5px solid #E5E7EB", fontSize:13, outline:"none",
+                               boxSizing:"border-box", fontFamily:"Manrope, system-ui, sans-serif" }}/>
+            </div>
+
+            {/* Buttons */}
+            <div style={{ display:"flex", gap:10 }}>
+              <button onClick={() => { setShowUpload(false); resetUpload(); }}
+                      style={{ flex:1, padding:"13px", borderRadius:12,
+                                border:"1.5px solid #E5E7EB", background:"white",
+                                fontSize:14, fontWeight:700, color:"#6B7280", cursor:"pointer" }}>
+                Abbrechen
+              </button>
+              <button onClick={handleUpload}
+                      style={{ flex:2, padding:"13px", borderRadius:12, border:"none",
+                                background:HCG, fontSize:14, fontWeight:700,
+                                color:"white", cursor:"pointer" }}>
+                Hinzufügen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};
+
 const PlaceholderScreen = ({ title, onBack }) => (
   <div className="flex flex-col bg-white min-h-full">
     <StatusBar />
@@ -2337,6 +2620,7 @@ export default function BarmerWireframe() {
       case "tagebuch": return <TagebuchScreen onBack={() => setScreen("health-connect")} />;
       case "erinnerungen": return <ErinnerungenScreen onBack={() => setScreen("health-connect")} />;
       case "termine": return <TermineScreen onBack={() => setScreen("health-connect")} />;
+      case "dokumente": return <DokumenteScreen onBack={() => setScreen("health-connect")} />;
       case "antraege": return <PlaceholderScreen title="Anträge & Co" onBack={goHome} />;
       case "postfach": return <PlaceholderScreen title="Postfach" onBack={goHome} />;
       case "bonus": return <PlaceholderScreen title="Bonus" onBack={goHome} />;
@@ -2345,7 +2629,7 @@ export default function BarmerWireframe() {
     }
   };
 
-  const hideNavOnScreen = screen === "gruppen" || screen === "health-connect" || screen === "freunde" || screen === "info" || screen === "tagebuch" || screen === "erinnerungen" || screen === "termine";
+  const hideNavOnScreen = screen === "gruppen" || screen === "health-connect" || screen === "freunde" || screen === "info" || screen === "tagebuch" || screen === "erinnerungen" || screen === "termine" || screen === "dokumente";
 
   return (
     <>
