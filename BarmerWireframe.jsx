@@ -4,7 +4,7 @@ import {
   MessageSquare, User, ChevronLeft, ChevronRight, ArrowRight, Plus,
   Search, Heart, Brain, Wind, Bone, Activity, Smile, Meh, Frown,
   Calendar, Lock, Send, Info, Users, BookOpen, Sparkles, ShieldAlert,
-  Compass, Gift, Mail, Tag, FileEdit, ArrowUpRight,
+  Compass, Gift, Mail, Tag, FileEdit, ArrowUpRight, X,
 } from "lucide-react";
 
 // ════════════════════════════════════════════════════════════════════════
@@ -1384,6 +1384,7 @@ const InfoScreen = ({ onBack, onOpenGroup }) => {
 
 const GruppenScreen = ({ onBack }) => {
   const [selected, setSelected] = useState(null);
+  const [showChatNotice, setShowChatNotice] = useState(true);
   const groups = [
     { name: "Chronische Krankheiten", members: 1284, active: 47,
       lastMsg: "Sandra: Wie geht ihr mit Müdigkeit um?", icon: Heart, color: "#EF4444" },
@@ -1431,6 +1432,28 @@ const GruppenScreen = ({ onBack }) => {
           </div>
           <Lock size={16} color="#9CA3AF" />
         </div>
+        {showChatNotice && (
+          <div className="flex items-start gap-2 px-3.5 py-3 mx-4 mt-3"
+               style={{ backgroundColor: "#FEF3C7", border: "1px solid #FDE68A",
+                        borderRadius: RAD.inner }}>
+            <span className="text-[13px] shrink-0 mt-0.5">⚠️</span>
+            <div className="flex-1 min-w-0">
+              <div className="text-[12px] mb-0.5" style={{ fontWeight: 700, color: "#92400E" }}>
+                Hinweis
+              </div>
+              <div className="text-[11.5px] leading-snug" style={{ color: "#92400E" }}>
+                Informationen in dieser Gruppe sind Beiträge von Nutzerinnen und Nutzern und werden
+                nicht medizinisch geprüft. Sie können unvollständig oder fehlerhaft sein und ersetzen
+                keine ärztliche Beratung.
+              </div>
+            </div>
+            <button onClick={() => setShowChatNotice(false)} className="shrink-0 p-0.5"
+                    style={{ border: "none", background: "none", cursor: "pointer" }}
+                    aria-label="Hinweis schließen">
+              <X size={14} color="#92400E" />
+            </button>
+          </div>
+        )}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3" style={{ backgroundColor: C.bgGray }}>
           <div className="mx-auto text-[10px] px-3 py-1.5 text-center"
                style={{ backgroundColor: "#E5E7EB", color: "#6B7280",
