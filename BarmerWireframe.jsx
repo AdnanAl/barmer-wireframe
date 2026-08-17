@@ -2303,7 +2303,7 @@ const DokumenteScreen = ({ onBack }) => {
 
   const categories = [
     { id:"gesundheit",   icon:"📄", label:"Gesundheitsdokumente", desc:"Arztberichte, Befunde, Therapieunterlagen", bg:"#F0F7F2" },
-    { id:"krankenkasse", icon:"💳", label:"Krankenkasse",         desc:"Bescheide, Anträge, Genehmigungen",         bg:"#E0F2FE" },
+    { id:"informationsmaterial", icon:"📚", label:"Informationsmaterial", desc:"Broschüren, Ratgeber, Informationsblätter", bg:"#E0F2FE" },
     { id:"medikamente",  icon:"💊", label:"Medikamente",          desc:"Rezepte, Medikamentenpläne",                bg:"#EDE9FE" },
     { id:"uploads",      icon:"📁", label:"Meine Uploads",        desc:"Eigene hochgeladene Dokumente",             bg:"#FEF3C7" },
   ];
